@@ -29,33 +29,6 @@ If not installed, install Node.js from [nodejs.org](https://nodejs.org/) or usin
 brew install node
 ```
 
-### Configure npm for User Installation (Optional, Avoid Permission Issues)
-
-```bash
-# Configure npm to use a directory in your home folder
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-
-# Add to your PATH (add this to ~/.zshrc or ~/.bash_profile)
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
-source ~/.zshrc
-```
-
-### Install pnpm
-
-nut.js uses pnpm as its package manager. Install it:
-
-```bash
-npm install -g pnpm@8.15.2
-```
-
-Or if you have Node.js 16.13+ with corepack:
-
-```bash
-corepack enable
-corepack prepare pnpm@8.15.2 --activate
-```
-
 ### macOS Permissions
 
 nut.js requires Accessibility and Screen Recording permissions. The library will prompt you automatically, but you can grant them manually:
@@ -254,26 +227,11 @@ Then run `pnpm install` or `npm install` in your project.
 
 ## Troubleshooting
 
-### Permission Errors
-
-If you get permission errors with npm, ensure you've configured the npm prefix:
-```bash
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH
-```
-
 ### Build Errors
 
 - **Xcode Command Line Tools not found**: Run `xcode-select --install`
 - **Compiler errors**: Ensure Xcode Command Line Tools are properly installed
 - **Architecture issues**: The build automatically supports both Intel and Apple Silicon
-
-### Permission Warnings
-
-If you see warnings about Accessibility or Screen Recording:
-1. Go to **System Settings** > **Privacy & Security**
-2. Add your terminal/IDE to **Accessibility**
-3. Add your terminal/IDE to **Screen Recording**
 
 ### Package Not Found Errors
 
@@ -284,54 +242,3 @@ If you see errors about premium packages (`@nut-tree/libnut-linux`, `@nut-tree/l
 The build should work automatically on Apple Silicon. If you encounter issues:
 - Ensure you're using a Node.js version compiled for arm64
 - Check that Xcode Command Line Tools are installed for your architecture
-
-## What Features Are Available?
-
-With the open-source build, you have access to:
-
-✅ **Core Features:**
-- Keyboard input (typing, key presses)
-- Mouse control (movement, clicks, scrolling, dragging)
-- Screen capture (screenshots, color detection, highlighting)
-- Window management (list windows, get active window, focus, resize, reposition)
-- Clipboard operations (copy/paste text)
-
-❌ **Premium Features (Not Available):**
-- OCR/text recognition on screen
-- Advanced image matching
-- GUI element inspection
-- Window minimize/restore (some platforms)
-- Advanced screen hooks
-
-## Directory Structure
-
-After installation, your directory structure should look like:
-
-```
-~/nutjs-build/
-├── libnut-core/          # Native C/C++/Objective-C module
-│   ├── build/           # Build output
-│   └── ...
-└── nut.js/              # TypeScript monorepo
-    ├── core/
-    │   ├── nut.js/      # Main package
-    │   ├── shared/      # Shared utilities
-    │   └── provider-interfaces/
-    ├── providers/
-    │   ├── libnut/      # libnut provider
-    │   └── clipboardy/  # Clipboard provider
-    └── ...
-```
-
-## Next Steps
-
-- Read the [nut.js documentation](https://nutjs.dev)
-- Check out the [examples](https://github.com/nut-tree/nut.js/tree/master/examples)
-- Join the [Discord community](https://discord.gg/U5csuM4Esp)
-
-## Support
-
-If you encounter issues:
-1. Check the [nut.js issues](https://github.com/nut-tree/nut.js/issues)
-2. Check the [libnut-core issues](https://github.com/nut-tree/libnut-core/issues)
-3. Join the Discord community for help
