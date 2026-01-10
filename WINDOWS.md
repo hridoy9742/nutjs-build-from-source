@@ -43,6 +43,32 @@ npm --version
 
 If not installed, download and install from [nodejs.org](https://nodejs.org/).
 
+### Configure npm for User Installation (Avoid Permission Issues)
+
+```powershell
+# Configure npm to use a directory in your home folder
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\npm-global"
+npm config set prefix "$env:APPDATA\npm-global"
+
+# Add to your PATH (add this to your PowerShell profile)
+$env:PATH += ";$env:APPDATA\npm-global"
+[Environment]::SetEnvironmentVariable("Path", $env:Path, [EnvironmentVariableTarget]::User)
+```
+
+### Install pnpm
+
+nut.js uses pnpm as its package manager. Install it:
+
+```powershell
+npm install -g pnpm@8.15.2
+```
+
+### pnpm verification
+
+```powershell
+pnpm -v
+```
+
 ### Windows 10 N Edition
 
 If you're running Windows 10 N and want to use ImageFinder plugins, install the [Media Feature Pack](https://support.microsoft.com/en-us/topic/media-feature-pack-for-windows-10-n-may-2020-ebbdf559-b84c-0fc2-bd51-e23c9f6a4439).
@@ -55,8 +81,8 @@ Open PowerShell or Git Bash:
 
 ```powershell
 # Create a directory for the projects
-New-Item -ItemType Directory -Force -Path "$HOME\nutjs-build"
-cd "$HOME\nutjs-build"
+New-Item -ItemType Directory -Force -Path "nutjs-build"
+cd nutjs-build
 
 # Clone libnut-core (the native dependency)
 git clone https://github.com/nut-tree/libnut-core.git
@@ -66,8 +92,8 @@ cd libnut-core
 Or using Git Bash:
 
 ```bash
-mkdir -p ~/nutjs-build
-cd ~/nutjs-build
+mkdir -p nutjs-build
+cd nutjs-build
 git clone https://github.com/nut-tree/libnut-core.git
 cd libnut-core
 ```
@@ -194,7 +220,7 @@ Update peer dependencies in `nut.js\providers\clipboardy\package.json`:
 ### Step 6: Install Dependencies and Build
 
 ```powershell
-# Remove old lock file to regenerate with workspace packages
+# Remove old lock file to regenerate with workspace packages (in nutjs directory)
 Remove-Item -Force pnpm-lock.yaml -ErrorAction SilentlyContinue
 
 # Install all dependencies
@@ -223,25 +249,32 @@ Get-ChildItem providers\libnut\dist\
 
 ## Using Your Built nut.js
 
-### Option 1: Link to Your Project
+### Step 1: Create a Global Link
+
+From the nut.js package directory, create a global link:
 
 ```powershell
-cd nut.js\core\nut.js
-pnpm link
-
-# In your project directory
-cd C:\path\to\your\project
-pnpm link @nut-tree/nut-js
+cd nutjs-build\nut.js\core\nut.js
+pnpm link --global
 ```
 
-### Option 2: Use File Path in Your Project
+### Step 2: Link in Your Project
+
+Navigate to your project directory and link the package:
+
+```powershell
+cd C:\path\to\your\project
+pnpm link --global @nut-tree/nut-js
+```
+
+### Step 3: Update Your Project's package.json
 
 In your project's `package.json`:
 
 ```json
 {
   "dependencies": {
-    "@nut-tree/nut-js": "file:../nutjs-build/nut.js/core/nut.js"
+    "@nut-tree/nut-js": "link:"
   }
 }
 ```

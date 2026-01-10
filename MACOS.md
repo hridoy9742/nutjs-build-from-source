@@ -29,6 +29,32 @@ If not installed, install Node.js from [nodejs.org](https://nodejs.org/) or usin
 brew install node
 ```
 
+### Configure npm for User Installation (Avoid Permission Issues)
+
+```bash
+# Configure npm to use a directory in your home folder
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+
+# Add to your PATH (add this to ~/.zshrc or ~/.bash_profile)
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Install pnpm
+
+nut.js uses pnpm as its package manager. Install it:
+
+```bash
+npm install -g pnpm@8.15.2
+```
+
+### pnpm verification
+
+```bash
+pnpm -v
+```
+
 ### macOS Permissions
 
 nut.js requires Accessibility and Screen Recording permissions. The library will prompt you automatically, but you can grant them manually:
@@ -49,8 +75,8 @@ nut.js requires Accessibility and Screen Recording permissions. The library will
 
 ```bash
 # Create a directory for the projects
-mkdir -p ~/nutjs-build
-cd ~/nutjs-build
+mkdir -p nutjs-build
+cd nutjs-build
 
 # Clone libnut-core (the native dependency)
 git clone https://github.com/nut-tree/libnut-core.git
@@ -77,8 +103,8 @@ This will compile the native C/C++/Objective-C code and create a `.node` module.
 ### Step 3: Clone nut.js
 
 ```bash
-# Go back to your build directory
-cd ~/nutjs-build
+# Go back to your build directory (assuning you are in nutjs-build/libnut-cores)
+cd ..
 
 # Clone nut.js
 git clone https://github.com/nut-tree/nut.js.git
@@ -178,7 +204,7 @@ Update peer dependencies in `nut.js/providers/clipboardy/package.json`:
 ### Step 6: Install Dependencies and Build
 
 ```bash
-# Remove old lock file to regenerate with workspace packages
+# Remove old lock file to regenerate with workspace packages (in nutjs directory)
 rm -f pnpm-lock.yaml
 
 # Install all dependencies
@@ -200,25 +226,32 @@ ls -la providers/libnut/dist/
 
 ## Using Your Built nut.js
 
-### Option 1: Link to Your Project
+### Step 1: Create a Global Link
+
+From the nut.js package directory, create a global link:
 
 ```bash
-cd ~/nutjs-build/nut.js/core/nut.js
-pnpm link
-
-# In your project directory
-cd /path/to/your/project
-pnpm link @nut-tree/nut-js
+cd nutjs-build/nut.js/core/nut.js
+pnpm link --global
 ```
 
-### Option 2: Use File Path in Your Project
+### Step 2: Link in Your Project
+
+Navigate to your project directory and link the package:
+
+```bash
+cd /path/to/your/project
+pnpm link --global @nut-tree/nut-js
+```
+
+### Step 3: Update Your Project's package.json
 
 In your project's `package.json`:
 
 ```json
 {
   "dependencies": {
-    "@nut-tree/nut-js": "file:../nutjs-build/nut.js/core/nut.js"
+    "@nut-tree/nut-js": "link:"
   }
 }
 ```
