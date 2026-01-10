@@ -86,14 +86,21 @@ try {
 # Check for Visual Studio Build Tools
 $vsBuildTools = Get-Command msbuild -ErrorAction SilentlyContinue
 if (-not $vsBuildTools) {
-    Write-Host "Warning: MSBuild not found in PATH" -ForegroundColor Yellow
-    Write-Host "You may need to install Visual Studio Build Tools or windows-build-tools" -ForegroundColor Yellow
-    Write-Host "Install with: npm install --global --production windows-build-tools" -ForegroundColor Yellow
+    Write-Host "Error: MSBuild (Visual Studio Build Tools) not found" -ForegroundColor Red
     Write-Host ""
-    $continue = Read-Host "Continue anyway? (y/n)"
-    if ($continue -ne "y" -and $continue -ne "Y") {
-        exit 1
-    }
+    Write-Host "Please install build tools using one of these methods:" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "Option 1 (Recommended): Install windows-build-tools" -ForegroundColor Cyan
+    Write-Host "  Run PowerShell as Administrator, then:" -ForegroundColor White
+    Write-Host "  npm install --global --production windows-build-tools" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Option 2: Install Visual Studio Build Tools manually" -ForegroundColor Cyan
+    Write-Host "  Download from: https://visualstudio.microsoft.com/downloads/" -ForegroundColor White
+    Write-Host "  Install 'Desktop development with C++' workload" -ForegroundColor White
+    Write-Host "  Ensure 'Windows 10/11 SDK' is selected" -ForegroundColor White
+    Write-Host ""
+    Write-Host "After installing, run this script again." -ForegroundColor Yellow
+    exit 1
 } else {
     Write-Host "✓ Build tools found" -ForegroundColor Green
 }
