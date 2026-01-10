@@ -43,21 +43,6 @@ npm --version
 
 If not installed, download and install from [nodejs.org](https://nodejs.org/).
 
-### Install pnpm
-
-nut.js uses pnpm as its package manager. Install it:
-
-```powershell
-npm install -g pnpm@8.15.2
-```
-
-Or if you have Node.js 16.13+ with corepack:
-
-```powershell
-corepack enable
-corepack prepare pnpm@8.15.2 --activate
-```
-
 ### Windows 10 N Edition
 
 If you're running Windows 10 N and want to use ImageFinder plugins, install the [Media Feature Pack](https://support.microsoft.com/en-us/topic/media-feature-pack-for-windows-10-n-may-2020-ebbdf559-b84c-0fc2-bd51-e23c9f6a4439).
@@ -279,16 +264,6 @@ Then run `pnpm install` or `npm install` in your project.
 - Ensure you have the Windows SDK installed
 - Try running: `npm install --global windows-build-tools`
 
-### Permission Errors
-
-If you get permission errors, try:
-1. Run PowerShell/CMD as Administrator
-2. Or configure npm to use a user directory:
-   ```powershell
-   npm config set prefix "$env:APPDATA\npm-global"
-   $env:PATH += ";$env:APPDATA\npm-global"
-   ```
-
 ### Path Issues
 
 Windows uses backslashes in paths. If you encounter path issues:
@@ -313,54 +288,3 @@ If you encounter "path too long" errors:
 Some antivirus software may interfere with the build process:
 - Temporarily disable real-time scanning during build
 - Add your build directory to antivirus exclusions
-
-## What Features Are Available?
-
-With the open-source build, you have access to:
-
-✅ **Core Features:**
-- Keyboard input (typing, key presses)
-- Mouse control (movement, clicks, scrolling, dragging)
-- Screen capture (screenshots, color detection, highlighting)
-- Window management (list windows, get active window, focus, resize, reposition)
-- Clipboard operations (copy/paste text)
-
-❌ **Premium Features (Not Available):**
-- OCR/text recognition on screen
-- Advanced image matching
-- GUI element inspection
-- Window minimize/restore (some platforms)
-- Advanced screen hooks
-
-## Directory Structure
-
-After installation, your directory structure should look like:
-
-```
-%USERPROFILE%\nutjs-build\
-├── libnut-core\          # Native C/C++ module
-│   ├── build\           # Build output
-│   └── ...
-└── nut.js\              # TypeScript monorepo
-    ├── core\
-    │   ├── nut.js\      # Main package
-    │   ├── shared\      # Shared utilities
-    │   └── provider-interfaces\
-    ├── providers\
-    │   ├── libnut\      # libnut provider
-    │   └── clipboardy\  # Clipboard provider
-    └── ...
-```
-
-## Next Steps
-
-- Read the [nut.js documentation](https://nutjs.dev)
-- Check out the [examples](https://github.com/nut-tree/nut.js/tree/master/examples)
-- Join the [Discord community](https://discord.gg/U5csuM4Esp)
-
-## Support
-
-If you encounter issues:
-1. Check the [nut.js issues](https://github.com/nut-tree/nut.js/issues)
-2. Check the [libnut-core issues](https://github.com/nut-tree/libnut-core/issues)
-3. Join the Discord community for help
