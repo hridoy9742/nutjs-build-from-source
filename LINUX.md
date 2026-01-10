@@ -203,25 +203,32 @@ ls -la providers/libnut/dist/
 
 ## Using Your Built nut.js
 
-### Option 1: Link to Your Project
+### Step 1: Create a Global Link
+
+From the nut.js package directory, create a global link:
 
 ```bash
-cd ~/nutjs-build/nut.js/core/nut.js
-pnpm link
-
-# In your project directory
-cd /path/to/your/project
-pnpm link @nut-tree/nut-js
+cd nutjs-build/nut.js/core/nut.js
+pnpm link --global
 ```
 
-### Option 2: Use File Path in Your Project
+### Step 2: Link in Your Project
+
+Navigate to your project directory and link the package:
+
+```bash
+cd /path/to/your/project
+pnpm link --global @nut-tree/nut-js
+```
+
+### Step 3: Update Your Project's package.json
 
 In your project's `package.json`:
 
 ```json
 {
   "dependencies": {
-    "@nut-tree/nut-js": "file:../nutjs-build/nut.js/core/nut.js"
+    "@nut-tree/nut-js": "link:"
   }
 }
 ```
