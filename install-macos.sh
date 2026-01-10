@@ -26,17 +26,10 @@ echo "Checking prerequisites..."
 
 # Check for Xcode Command Line Tools
 if ! xcode-select -p &> /dev/null; then
-    echo -e "${YELLOW}Xcode Command Line Tools not found.${NC}"
+    echo -e "${RED}Error: Xcode Command Line Tools are not installed${NC}"
     echo "Please install them by running: xcode-select --install"
-    echo "Or install them now? (y/n)"
-    read -r response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        xcode-select --install
-        echo "Please complete the Xcode Command Line Tools installation and run this script again."
-        exit 0
-    else
-        exit 1
-    fi
+    echo "Then run this script again after installation completes."
+    exit 1
 fi
 echo -e "${GREEN}✓ Xcode Command Line Tools found${NC}"
 

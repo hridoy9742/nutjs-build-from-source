@@ -71,37 +71,61 @@ echo -e "${GREEN}✓ git found: $GIT_VERSION${NC}"
 
 # Check for Python3 (needed for JSON manipulation in script)
 if ! command -v python3 &> /dev/null; then
-    echo -e "${YELLOW}Warning: python3 not found. Installing system dependencies...${NC}"
-    echo "Please enter your password to install build dependencies:"
-    sudo apt-get update
-    sudo apt-get install -y python3 python3-json
+    echo -e "${RED}Error: python3 is not installed${NC}"
+    echo "Please install Python3:"
+    echo "  Ubuntu/Debian: sudo apt-get install python3"
+    echo "  Fedora/RHEL: sudo dnf install python3"
+    echo "  Arch: sudo pacman -S python"
+    exit 1
 fi
 PYTHON_VERSION=$(python3 --version 2>&1)
 echo -e "${GREEN}✓ Python3 found: $PYTHON_VERSION${NC}"
 
-# Check for cmake and other build tools
-MISSING_TOOLS=()
+# Check for cmake
 if ! command -v cmake &> /dev/null; then
-    MISSING_TOOLS+=("cmake")
-fi
-if ! command -v g++ &> /dev/null && ! command -v gcc &> /dev/null; then
-    MISSING_TOOLS+=("build-essential")
-fi
-if [ ${#MISSING_TOOLS[@]} -gt 0 ]; then
-    echo -e "${YELLOW}Warning: Some build tools are missing. Installing system dependencies...${NC}"
-    echo "Missing: ${MISSING_TOOLS[*]}"
-    echo "Please enter your password to install build dependencies:"
-    sudo apt-get update
-    sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential python3
-fi
-
-# Verify build tools are now available
-if ! command -v cmake &> /dev/null; then
-    echo -e "${RED}Error: cmake installation failed${NC}"
+    echo -e "${RED}Error: cmake is not installed${NC}"
+    echo "Please install cmake:"
+    echo "  Ubuntu/Debian: sudo apt-get install cmake"
+    echo "  Fedora/RHEL: sudo dnf install cmake"
+    echo "  Arch: sudo pacman -S cmake"
     exit 1
 fi
 CMAKE_VERSION=$(cmake --version | head -n1)
-echo -e "${GREEN}✓ Build tools found: $CMAKE_VERSION${NC}"
+echo -e "${GREEN}✓ cmake found: $CMAKE_VERSION${NC}"
+
+# Check for C/C++ compiler
+if ! command -v g++ &> /dev/null && ! command -v gcc &> /dev/null; then
+    echo -e "${RED}Error: C/C++ compiler (gcc/g++) is not installed${NC}"
+    echo "Please install build tools:"
+    echo "  Ubuntu/Debian: sudo apt-get install build-essential"
+    echo "  Fedora/RHEL: sudo dnf install gcc gcc-c++ make"
+    echo "  Arch: sudo pacman -S base-devel"
+    exit 1
+fi
+echo -e "${GREEN}✓ C/C++ compiler found${NC}"
+
+# Check for required libraries (libxtst-dev, libpng-dev, libx11-dev)
+MISSING_LIBS=()
+if ! pkg-config --exists xtst 2>/dev/null && [ ! -f /usr/include/X11/extensions/XTest.h ]; then
+    MISSING_LIBS+=("libxtst-dev")
+fi
+if ! pkg-config --exists libpng 2>/dev/null && [ ! -f /usr/include/png.h ]; then
+    MISSING_LIBS+=("libpng-dev")
+fi
+if ! pkg-config --exists x11 2>/dev/null && [ ! -f /usr/include/X11/Xlib.h ]; then
+    MISSING_LIBS+=("libx11-dev")
+fi
+
+if [ ${#MISSING_LIBS[@]} -gt 0 ]; then
+    echo -e "${RED}Error: Required development libraries are missing${NC}"
+    echo "Missing: ${MISSING_LIBS[*]}"
+    echo "Please install them:"
+    echo "  Ubuntu/Debian: sudo apt-get install libxtst-dev libpng-dev libx11-dev zlib1g-dev"
+    echo "  Fedora/RHEL: sudo dnf install libXtst-devel libpng-devel libX11-devel zlib-devel"
+    echo "  Arch: sudo pacman -S libxtst libpng libx11 zlib"
+    exit 1
+fi
+echo -e "${GREEN}✓ Required development libraries found${NC}"
 
 # Configure npm to avoid permission issues
 echo ""
