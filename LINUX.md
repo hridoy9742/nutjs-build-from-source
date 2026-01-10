@@ -48,13 +48,6 @@ nut.js uses pnpm as its package manager. Install it:
 npm install -g pnpm@8.15.2
 ```
 
-Or if you have Node.js 16.13+ with corepack:
-
-```bash
-corepack enable
-corepack prepare pnpm@8.15.2 --activate
-```
-
 ## Installation Steps
 
 ### Step 1: Clone the Repositories
