@@ -12,24 +12,24 @@ nut.js is a cross-platform native UI automation library. While pre-built package
 
 ### Linux
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/nutjs-installation-guides/install-linux.sh | bash
+curl -fsSL https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-linux.sh | bash
 ```
 
 Or download and run:
 ```bash
-wget https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/nutjs-installation-guides/install-linux.sh
+wget https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-linux.sh
 chmod +x install-linux.sh
 ./install-linux.sh
 ```
 
 ### macOS
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/nutjs-installation-guides/install-macos.sh | bash
+curl -fsSL https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-macos.sh | bash
 ```
 
 Or download and run:
 ```bash
-wget https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/nutjs-installation-guides/install-macos.sh
+wget https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-macos.sh
 chmod +x install-macos.sh
 ./install-macos.sh
 ```
@@ -38,14 +38,12 @@ chmod +x install-macos.sh
 Download and run in PowerShell:
 ```powershell
 # Download the script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/docs/nutjs-installation-guides/install-windows.ps1" -OutFile "install-windows.ps1"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-windows.ps1" -OutFile "install-windows.ps1"
 
 # Run the script (may need to allow script execution)
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\install-windows.ps1
 ```
-
-**Note**: Replace `YOUR_USERNAME/YOUR_REPO` with your actual GitHub repository path.
 
 ## Manual Installation Guides
 
