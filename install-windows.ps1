@@ -105,22 +105,23 @@ if (-not $vsBuildTools) {
     Write-Host "✓ Build tools found" -ForegroundColor Green
 }
 
-# Install pnpm
+# Check for pnpm (use npx if not available to avoid global install)
 Write-Host ""
-Write-Host "Installing pnpm..." -ForegroundColor Yellow
+Write-Host "Checking for pnpm..." -ForegroundColor Yellow
+$useNpx = $false
 try {
     $pnpmVersion = pnpm --version
     Write-Host "✓ pnpm found: $pnpmVersion" -ForegroundColor Green
 } catch {
-    Write-Host "Installing pnpm..." -ForegroundColor Yellow
-    npm install -g pnpm@8.15.2
-    Write-Host "✓ pnpm installed" -ForegroundColor Green
+    Write-Host "pnpm not found. Will use npx pnpm (no global installation needed)" -ForegroundColor Yellow
+    $useNpx = $true
 }
 
-# Set build directory
-$buildDir = Join-Path $env:USERPROFILE "nutjs-build"
+# Set build directory (use current directory to keep everything self-contained)
+$buildDir = Join-Path (Get-Location) "nutjs-build"
 Write-Host ""
 Write-Host "Build directory: $buildDir" -ForegroundColor Cyan
+Write-Host "Note: All files will be installed in this directory. You can delete it entirely if something goes wrong." -ForegroundColor Yellow
 New-Item -ItemType Directory -Force -Path $buildDir | Out-Null
 Set-Location $buildDir
 
@@ -255,11 +256,19 @@ Write-Host "Removing old lock file..." -ForegroundColor Yellow
 Remove-Item -Force pnpm-lock.yaml -ErrorAction SilentlyContinue
 
 Write-Host "Installing dependencies (this may take several minutes)..." -ForegroundColor Yellow
-pnpm install
+if ($useNpx) {
+    npx pnpm@8.15.2 install
+} else {
+    pnpm install
+}
 
 Write-Host ""
 Write-Host "Compiling TypeScript packages..." -ForegroundColor Yellow
-pnpm run compile
+if ($useNpx) {
+    npx pnpm@8.15.2 run compile
+} else {
+    pnpm run compile
+}
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Cyan
@@ -270,10 +279,20 @@ Write-Host "nut.js has been successfully built from source!" -ForegroundColor Gr
 Write-Host ""
 Write-Host "Build location: $buildDir\nut.js" -ForegroundColor Cyan
 Write-Host ""
+Write-Host "All files are contained in: $buildDir" -ForegroundColor Yellow
+Write-Host "You can delete this entire directory if you need to start over." -ForegroundColor Yellow
+Write-Host ""
 Write-Host "To use in your project:" -ForegroundColor Yellow
 Write-Host "  cd $buildDir\nut.js\core\nut.js" -ForegroundColor White
-Write-Host "  pnpm link" -ForegroundColor White
-Write-Host ""
-Write-Host "Then in your project:" -ForegroundColor Yellow
-Write-Host "  pnpm link @nut-tree/nut-js" -ForegroundColor White
+if ($useNpx) {
+    Write-Host "  npx pnpm@8.15.2 link" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Then in your project:" -ForegroundColor Yellow
+    Write-Host "  npx pnpm@8.15.2 link @nut-tree/nut-js" -ForegroundColor White
+} else {
+    Write-Host "  pnpm link" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Then in your project:" -ForegroundColor Yellow
+    Write-Host "  pnpm link @nut-tree/nut-js" -ForegroundColor White
+}
 Write-Host ""

@@ -82,36 +82,23 @@ fi
 PYTHON_VERSION=$(python3 --version 2>&1)
 echo -e "${GREEN}✓ Python3 found: $PYTHON_VERSION${NC}"
 
-# Configure npm to avoid permission issues
+# Check for pnpm (use npx if not available to avoid global install)
 echo ""
-echo "Configuring npm for user installation..."
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global' 2>/dev/null || true
-
-# Add to PATH if not already there
-if [[ ":$PATH:" != *":$HOME/.npm-global/bin:"* ]]; then
-    echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc 2>/dev/null || echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bash_profile
-    export PATH=~/.npm-global/bin:$PATH
-    echo -e "${GREEN}✓ npm configured${NC}"
-else
-    echo -e "${GREEN}✓ npm already configured${NC}"
-fi
-
-# Install pnpm
-echo ""
-echo "Installing pnpm..."
+echo "Checking for pnpm..."
 if ! command -v pnpm &> /dev/null; then
-    npm install -g pnpm@8.15.2
-    echo -e "${GREEN}✓ pnpm installed${NC}"
+    echo -e "${YELLOW}pnpm not found. Will use npx pnpm (no global installation needed)${NC}"
+    USE_NPX=true
 else
     PNPM_VERSION=$(pnpm --version)
     echo -e "${GREEN}✓ pnpm found: $PNPM_VERSION${NC}"
+    USE_NPX=false
 fi
 
-# Set build directory
-BUILD_DIR="$HOME/nutjs-build"
+# Set build directory (use current directory to keep everything self-contained)
+BUILD_DIR="$(pwd)/nutjs-build"
 echo ""
 echo "Build directory: $BUILD_DIR"
+echo -e "${YELLOW}Note: All files will be installed in this directory. You can delete it entirely if something goes wrong.${NC}"
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
@@ -258,11 +245,19 @@ echo "Removing old lock file..."
 rm -f pnpm-lock.yaml
 
 echo "Installing dependencies (this may take a few minutes)..."
-pnpm install
+if [ "$USE_NPX" = true ]; then
+    npx pnpm@8.15.2 install
+else
+    pnpm install
+fi
 
 echo ""
 echo "Compiling TypeScript packages..."
-pnpm run compile
+if [ "$USE_NPX" = true ]; then
+    npx pnpm@8.15.2 run compile
+else
+    pnpm run compile
+fi
 
 echo ""
 echo "=========================================="
@@ -273,6 +268,9 @@ echo "nut.js has been successfully built from source!"
 echo ""
 echo "Build location: $BUILD_DIR/nut.js"
 echo ""
+echo -e "${YELLOW}All files are contained in: $BUILD_DIR${NC}"
+echo -e "${YELLOW}You can delete this entire directory if you need to start over.${NC}"
+echo ""
 echo "⚠️  IMPORTANT: macOS Permissions Required"
 echo "nut.js needs Accessibility and Screen Recording permissions:"
 echo "  1. Open System Settings > Privacy & Security"
@@ -281,8 +279,15 @@ echo "  3. Enable Screen Recording for your terminal/IDE"
 echo ""
 echo "To use in your project:"
 echo "  cd $BUILD_DIR/nut.js/core/nut.js"
-echo "  pnpm link"
-echo ""
-echo "Then in your project:"
-echo "  pnpm link @nut-tree/nut-js"
+if [ "$USE_NPX" = true ]; then
+    echo "  npx pnpm@8.15.2 link"
+    echo ""
+    echo "Then in your project:"
+    echo "  npx pnpm@8.15.2 link @nut-tree/nut-js"
+else
+    echo "  pnpm link"
+    echo ""
+    echo "Then in your project:"
+    echo "  pnpm link @nut-tree/nut-js"
+fi
 echo ""
