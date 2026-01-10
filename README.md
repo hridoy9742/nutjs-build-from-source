@@ -63,7 +63,6 @@ With the open-source build, you get:
 If you find issues with these guides or have improvements, please:
 1. Open an issue in the repository
 2. Submit a pull request with your improvements
-3. Share your experience in the Discord community
 
 ## License
 
