@@ -1,6 +1,15 @@
 # nut.js Installation Script for Windows
-# This script automates building nut.js from source on Windows
-# Run this script in PowerShell (may need to run as Administrator for build tools)
+# 
+# ⚠️ DEPRECATED: This PowerShell script is deprecated.
+# Please use install-windows.bat instead, which must be run in "Developer Command Prompt for VS 2022".
+# 
+# This script is kept for reference only and may not work correctly due to:
+# - Requires Developer Command Prompt environment variables
+# - References deprecated windows-build-tools
+# - May not properly detect Visual Studio 2022
+#
+# See WINDOWS.md for the updated manual installation guide.
+# See README.md for the new automated script (install-windows.bat).
 
 $ErrorActionPreference = "Stop"
 

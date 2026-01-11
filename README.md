@@ -23,14 +23,27 @@ chmod +x install-macos.sh
 ```
 
 ### Windows
-```powershell
-# Download the script
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-windows.ps1" -OutFile "install-windows.ps1"
 
-# Run the script (may need to allow script execution)
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\install-windows.ps1
+**⚠️ Important:** The Windows installation script **MUST** be run in the "Developer Command Prompt for VS 2022". Do not use regular Command Prompt or PowerShell.
+
+1. **First, install Visual Studio 2022 Build Tools:**
+   - Go to [Visual Studio Downloads](https://visualstudio.microsoft.com/downloads/)
+   - Download "Build Tools for Visual Studio 2022"
+   - Install with "Desktop development with C++" workload
+   - Verify installation: Open regular Command Prompt and run `where devenv`
+
+2. **Open "Developer Command Prompt for VS 2022"** (search in Start menu)
+
+3. **Download and run the script:**
+```cmd
+REM Download the script (or download manually from GitHub)
+curl -o install-windows.bat https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-windows.bat
+
+REM Run the script
+install-windows.bat
 ```
+
+**Note:** If you prefer step-by-step manual installation, see the [Windows Installation Guide](./WINDOWS.md).
 
 ## Manual Guides
 

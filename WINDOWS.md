@@ -6,37 +6,46 @@ This guide will walk you through building nut.js from source on Windows, includi
 
 ### System Dependencies
 
-#### Option 1: Install windows-build-tools (Recommended)
+#### Visual Studio Build Tools Installation
 
-From an **elevated PowerShell or CMD.exe** (Run as Administrator):
+**⚠️ Important:** The `windows-build-tools` npm package is deprecated and no longer works. You must install Visual Studio Build Tools manually by downloading the installer from Microsoft's website.
 
-```powershell
-npm install --global --production windows-build-tools
-```
+1. **Visual Studio 2022 Build Tools** (Required):
+   - Go to [Visual Studio Downloads](https://visualstudio.microsoft.com/downloads/)
+   - Scroll down to "Tools for Visual Studio" section
+   - Download **"Build Tools for Visual Studio 2022"** (not Visual Studio 2026 or newer)
+   - Run the downloaded installer (`.exe` file)
+   - During installation, select the **"Desktop development with C++"** workload
+   - Ensure **"Windows 10/11 SDK"** is selected (usually selected by default)
+   - Click "Install" and wait for the installation to complete (this may take 10-30 minutes)
 
-This installs:
-- Visual C++ Build Tools
-- Python (required for node-gyp)
-- Other necessary build tools
-
-#### Option 2: Manual Installation
-
-If you prefer to install manually:
-
-1. **Visual Studio Build Tools** or **Visual Studio Community**:
-   - Download from [Visual Studio Downloads](https://visualstudio.microsoft.com/downloads/)
-   - Install "Desktop development with C++" workload
-   - Ensure "Windows 10/11 SDK" is selected
+   **Note:** Visual Studio 2026 and newer versions are not yet recognized by node-gyp/cmake-js. You must use Visual Studio 2022 Build Tools.
 
 2. **Python** (for node-gyp):
    - Download from [python.org](https://www.python.org/downloads/)
-   - During installation, check "Add Python to PATH"
+   - During installation, check **"Add Python to PATH"**
+   - Python 3.8 or higher is recommended
+
+3. **Verify Visual Studio 2022 Installation:**
+   - After installation completes, verify it was successful by running this command in a regular Command Prompt:
+     ```cmd
+     where devenv
+     ```
+   - If the command returns a path (e.g., `C:\Program Files\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\devenv.exe`), the installation was successful.
+   - If the command returns nothing, the installation may have failed or the tools are not in your PATH.
+
+4. **⚠️ Important: Use Developer Command Prompt for VS 2022**
+   - **All subsequent commands in this guide must be run in the "Developer Command Prompt for VS 2022"**
+   - You can find it by searching for "Developer Command Prompt" in the Start menu
+   - Look for **"Developer Command Prompt for VS 2022"** (not VS 2026 or newer)
+   - This sets up all necessary environment variables (PATH, VCINSTALLDIR, etc.) that are required for building native Node.js modules
+   - **Do not use regular Command Prompt or PowerShell** - the build will fail without these environment variables
 
 ### Node.js and npm
 
 Ensure you have Node.js installed (version 16 or higher for nut.js, 10.15.3+ for libnut-core):
 
-```powershell
+```cmd
 node --version
 npm --version
 ```
@@ -45,27 +54,28 @@ If not installed, download and install from [nodejs.org](https://nodejs.org/).
 
 ### Configure npm for User Installation (Avoid Permission Issues)
 
-```powershell
-# Configure npm to use a directory in your home folder
-New-Item -ItemType Directory -Force -Path "$env:APPDATA\npm-global"
-npm config set prefix "$env:APPDATA\npm-global"
+```cmd
+REM Configure npm to use a directory in your home folder
+mkdir "%APPDATA%\npm-global" 2>nul
+npm config set prefix "%APPDATA%\npm-global"
 
-# Add to your PATH (add this to your PowerShell profile)
-$env:PATH += ";$env:APPDATA\npm-global"
-[Environment]::SetEnvironmentVariable("Path", $env:Path, [EnvironmentVariableTarget]::User)
+REM Add to your PATH (you may need to add this manually to your system PATH)
+setx PATH "%PATH%;%APPDATA%\npm-global"
 ```
+
+**Note:** After running `setx`, you may need to close and reopen your command prompt for PATH changes to take effect.
 
 ### Install pnpm
 
 nut.js uses pnpm as its package manager. Install it:
 
-```powershell
+```cmd
 npm install -g pnpm@8.15.2
 ```
 
 ### pnpm verification
 
-```powershell
+```cmd
 pnpm -v
 ```
 
@@ -75,40 +85,53 @@ If you're running Windows 10 N and want to use ImageFinder plugins, install the 
 
 ## Installation Steps
 
-### Step 1: Clone the Repositories
+**⚠️ Important:** From this point forward, **all commands must be run in the "Developer Command Prompt for VS 2022"**. Do not use regular Command Prompt or PowerShell.
 
-Open PowerShell or Git Bash:
+**Option: Automated Installation Script**
 
-```powershell
-# Create a directory for the projects
-New-Item -ItemType Directory -Force -Path "nutjs-build"
-cd nutjs-build
+If you prefer an automated installation, you can use the `install-windows.bat` script which automates all the steps below. The script:
+- Checks prerequisites
+- Clones repositories
+- Builds libnut-core
+- Automatically edits package.json files
+- Installs dependencies and compiles
 
-# Clone libnut-core (the native dependency)
-git clone https://github.com/nut-tree/libnut-core.git
-cd libnut-core
+To use the script, open "Developer Command Prompt for VS 2022" and run:
+```cmd
+install-windows.bat
 ```
 
-Or using Git Bash:
+**Manual Installation (Step-by-Step)**
 
-```bash
-mkdir -p nutjs-build
+If you prefer to follow the steps manually or need more control, continue with the steps below.
+
+### Step 1: Clone the Repositories
+
+Open the **Developer Command Prompt for VS 2022** and run:
+
+```cmd
+REM Create a directory for the projects
+mkdir nutjs-build
 cd nutjs-build
+
+REM Clone libnut-core (the native dependency)
 git clone https://github.com/nut-tree/libnut-core.git
 cd libnut-core
 ```
 
 ### Step 2: Build libnut-core
 
-```powershell
-# Install npm dependencies
+**Important:** Make sure you're in the **"Developer Command Prompt for VS 2022"** (not VS 2026). This ensures all necessary environment variables are set correctly.
+
+```cmd
+REM Install npm dependencies
 npm install
 
-# Patch the package name for your platform (Windows)
-$env:CI = "true"
+REM Patch the package name for your platform (Windows)
+set CI=true
 npm run patch
 
-# Build the release version
+REM Build the release version
 npm run build:release
 ```
 
@@ -118,11 +141,11 @@ This will compile the native C/C++ code and create a `.node` module. The build o
 
 ### Step 3: Clone nut.js
 
-```powershell
-# Go back to your build directory
+```cmd
+REM Go back to your build directory
 cd ..
 
-# Clone nut.js
+REM Clone nut.js
 git clone https://github.com/nut-tree/nut.js.git
 cd nut.js
 ```
@@ -219,14 +242,14 @@ Update peer dependencies in `nut.js\providers\clipboardy\package.json`:
 
 ### Step 6: Install Dependencies and Build
 
-```powershell
-# Remove old lock file to regenerate with workspace packages (in nutjs directory)
-Remove-Item -Force pnpm-lock.yaml -ErrorAction SilentlyContinue
+```cmd
+REM Remove old lock file to regenerate with workspace packages (in nutjs directory)
+del pnpm-lock.yaml 2>nul
 
-# Install all dependencies
+REM Install all dependencies
 pnpm install
 
-# Compile all TypeScript packages
+REM Compile all TypeScript packages
 pnpm run compile
 ```
 
@@ -234,35 +257,30 @@ pnpm run compile
 
 To verify the installation worked:
 
-```powershell
-# Check that the compiled packages exist
-Test-Path core\nut.js\dist\
-Test-Path providers\libnut\dist\
+```cmd
+REM Check that the compiled packages exist
+dir core\nut.js\dist
+dir providers\libnut\dist
 ```
 
-Or list the directories:
-
-```powershell
-Get-ChildItem core\nut.js\dist\
-Get-ChildItem providers\libnut\dist\
-```
+If both directories exist and contain files, the installation was successful.
 
 ## Using Your Built nut.js
 
 ### Step 1: Create a Global Link
 
-From the nut.js package directory, create a global link:
+From the nut.js package directory, create a global link (in Developer Command Prompt for VS 2022):
 
-```powershell
+```cmd
 cd nutjs-build\nut.js\core\nut.js
 pnpm link --global
 ```
 
 ### Step 2: Link in Your Project
 
-Navigate to your project directory and link the package:
+Navigate to your project directory and link the package (in Developer Command Prompt for VS 2022):
 
-```powershell
+```cmd
 cd C:\path\to\your\project
 pnpm link --global @nut-tree/nut-js
 ```
@@ -279,23 +297,44 @@ In your project's `package.json`:
 }
 ```
 
-Then run `pnpm install` or `npm install` in your project.
+Then run `pnpm install` or `npm install` in your project. You got yourself a free, self-built nutjs, go nuts!!!
 
 ## Troubleshooting
+
+### Visual Studio Version Errors
+
+**Error: "unknown version 'undefined' found" or "could not find a version of Visual Studio 2017 or newer to use"**
+
+This error occurs when you have Visual Studio 2026 or newer installed. node-gyp/cmake-js does not yet recognize these newer versions.
+
+**Solution:** 
+- Install **Visual Studio 2022 Build Tools** (not 2026 or newer)
+- Use the "Developer Command Prompt for VS 2022" (not VS 2026)
+- If you have both versions installed, you can create a `.npmrc` file in the `libnut-core` directory with:
+  ```
+  msvs_version=2022
+  ```
 
 ### Build Tool Errors
 
 **Error: "MSBuild.exe not found"**
-- Ensure Visual Studio Build Tools or Visual Studio is installed
-- Run from "Developer Command Prompt for VS" or ensure MSBuild is in PATH
+- Ensure Visual Studio 2022 Build Tools are installed
+- **You must run commands from "Developer Command Prompt for VS 2022"** - regular Command Prompt will not work
+- Verify installation by running in Developer Command Prompt: `where devenv`
+- If `where devenv` returns a path, VS 2022 is installed correctly
+- If it returns nothing, reinstall Visual Studio 2022 Build Tools
 
 **Error: "Python not found"**
-- Install Python and ensure it's added to PATH
-- Or use windows-build-tools which includes Python
+- Install Python from [python.org](https://www.python.org/downloads/)
+- During installation, ensure "Add Python to PATH" is checked
+- Verify installation by running: `python --version`
 
-**Error: "node-gyp rebuild failed"**
-- Ensure you have the Windows SDK installed
-- Try running: `npm install --global windows-build-tools`
+**Error: "node-gyp rebuild failed" or "cmake-js rebuild failed"**
+- Ensure you have Visual Studio 2022 Build Tools installed (not 2026 or newer)
+- Ensure "Desktop development with C++" workload is installed
+- Ensure "Windows 10/11 SDK" is selected
+- Run from "Developer Command Prompt for VS 2022"
+- If using VS 2026, install VS 2022 Build Tools alongside it
 
 ### Path Issues
 
@@ -310,10 +349,11 @@ If you see errors about premium packages (`@nut-tree/libnut-darwin`, `@nut-tree/
 ### Long Path Issues
 
 If you encounter "path too long" errors:
-1. Enable long paths in Windows (requires admin):
-   ```powershell
-   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+1. Enable long paths in Windows (requires admin, run Command Prompt as Administrator):
+   ```cmd
+   reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
    ```
+   Then restart your computer.
 2. Or build in a shorter path (e.g., `C:\nutjs` instead of deep nested paths)
 
 ### Antivirus Interference
